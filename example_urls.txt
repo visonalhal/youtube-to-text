@@ -1,0 +1,12 @@
+# 示例路径文件
+# 每行一个 YouTube 视频链接或本地视频文件路径
+# 可以混合使用 YouTube 链接和本地文件路径
+
+# YouTube 视频链接示例（请替换为实际的视频链接）
+# https://www.youtube.com/watch?v=dQw4w9WgXcQ
+# https://www.youtube.com/watch?v=VIDEO_ID_2
+
+# 本地视频文件路径示例（请替换为实际的文件路径）
+# /path/to/your/video1.mp4
+# /path/to/your/video2.avi
+# ./local_videos/sample.mkv
