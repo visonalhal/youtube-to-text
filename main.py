@@ -16,6 +16,7 @@ from downloader.local_video_processor import LocalVideoProcessor
 from converter.audio_converter import AudioConverter
 from transcriber.whisper_transcriber import WhisperTranscriber
 from src.formatter.document_formatter import DocumentFormatter
+from optimizer.ai_optimizer import AIOptimizer
 from utils.config import Config
 
 
@@ -49,6 +50,20 @@ class YouTubeToTextProcessor:
         self.formatter = DocumentFormatter(
             output_dir=self.config.get('formatter.output_dir', 'output/formatted')
         )
+        
+        # 初始化AI优化器（如果启用）
+        self.optimizer = None
+        if self.config.get('optimizer.enable_ai_optimization', False):
+            optimizer_config = self.config.get('optimizer', {})
+            # 从环境变量获取API密钥
+            import os
+            api_key = os.getenv('DEEPSEEK_API_KEY') or optimizer_config.get('api_key', '')
+            if api_key:
+                optimizer_config['api_key'] = api_key
+                self.optimizer = AIOptimizer(optimizer_config)
+                logger.info("AI优化器已启用")
+            else:
+                logger.warning("未配置API密钥，AI优化功能将不可用")
     
     def _setup_logging(self):
         """设置日志"""
@@ -215,6 +230,20 @@ class YouTubeToTextProcessor:
                 logger.success(f"文档格式化完成: {format_result['output_path']}")
             else:
                 logger.warning("文档格式化失败，但转录已完成")
+        
+        # 步骤5: AI优化（如果启用）
+        if self.optimizer and self.config.get('optimizer.enable_ai_optimization', False):
+            logger.info("步骤5: AI文档优化")
+            # 使用原始转录文本进行AI优化
+            original_text = transcript_result['text']
+            title = transcript_result.get('title', '转录文档')
+            
+            optimization_result = self.optimizer.optimize_text(original_text, title)
+            if optimization_result:
+                result['steps']['ai_optimization'] = optimization_result
+                logger.success(f"AI优化完成: {optimization_result['output_path']}")
+            else:
+                logger.warning("AI优化失败，但基础处理已完成")
         
         return result
     

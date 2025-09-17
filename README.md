@@ -8,6 +8,7 @@
 - 🎵 **音频提取**: 将视频转换为高质量音频文件
 - 🗣️ **语音识别**: 使用 OpenAI Whisper 进行高精度语音转文本
 - 📝 **智能排版**: 自动格式化文档，提升可读性
+- 🤖 **AI优化**: 使用AI模型智能优化转录文本，提升可读性和专业性
 - ⚙️ **灵活配置**: 支持自定义各种参数
 - 📊 **批量处理**: 支持批量处理多个视频（可混合 YouTube 和本地文件）
 - 🌍 **多语言支持**: 支持中文、英文等多种语言
@@ -20,6 +21,7 @@
 - **OpenAI Whisper**: 语音识别
 - **FFmpeg**: 音频处理
 - **Loguru**: 日志管理
+- **DeepSeek/OpenAI API**: AI文档优化
 
 ## 安装说明
 
@@ -51,6 +53,24 @@ sudo apt install ffmpeg
 
 **Windows:**
 下载 FFmpeg 并添加到系统 PATH
+
+### 4. 配置AI优化（可选）
+
+如需使用AI优化功能，需要配置API密钥：
+
+**DeepSeek API（推荐，性价比高）:**
+```bash
+export DEEPSEEK_API_KEY=your_api_key_here
+```
+
+**OpenAI API:**
+```bash
+export OPENAI_API_KEY=your_api_key_here
+```
+
+获取API密钥：
+- DeepSeek: https://platform.deepseek.com/
+- OpenAI: https://platform.openai.com/
 
 ## 使用方法
 
@@ -109,6 +129,16 @@ formatter:
   enable_basic_formatting: true        # 启用基础排版
   enable_ai_enhancement: false         # 启用AI增强排版（可选）
   output_formats: ["markdown"]         # 输出格式
+
+# AI优化配置
+optimizer:
+  output_dir: "output/optimized"       # AI优化文档保存目录
+  enable_ai_optimization: true         # 启用AI优化
+  ai_service: "deepseek"               # AI服务类型 (deepseek/openai/local)
+  model: "deepseek-chat"               # 使用的模型
+  optimization_style: "basic"          # 优化风格 (basic/academic/business/technical)
+  max_tokens: 4000                     # 最大token数
+  temperature: 0.7                     # 温度参数
 ```
 
 ## 输出文件
@@ -123,8 +153,10 @@ output/
 │   ├── video_title_transcript.txt      # 纯文本
 │   ├── video_title_timestamped.txt     # 带时间戳的文本
 │   └── video_title_details.json        # 详细信息
-└── formatted/        # 格式化文档
-    └── video_title_formatted.md        # 格式化后的Markdown文档
+├── formatted/        # 格式化文档
+│   └── video_title_formatted.md        # 格式化后的Markdown文档
+└── optimized/        # AI优化文档
+    └── video_title_optimized.md        # AI优化后的Markdown文档
 ```
 
 ## Whisper 模型选择
@@ -178,6 +210,28 @@ python main.py "https://www.youtube.com/watch?v=VIDEO_ID" --audio-only
 
 ## 高级功能
 
+### AI文档优化
+
+AI优化功能可以显著提升转录文档的质量：
+
+**优化效果：**
+- ✅ 修正错别字和语法错误
+- ✅ 重新组织段落结构，添加标题
+- ✅ 将口语化表达转换为书面语
+- ✅ 生成专业的Markdown文档
+- ✅ 保持原文逻辑结构
+
+**优化风格选择：**
+- `basic`: 基础优化，适合一般文档
+- `academic`: 学术风格，适合学术论文
+- `business`: 商业风格，适合商业文档
+- `technical`: 技术风格，适合技术文档
+
+**成本估算：**
+- DeepSeek API: 约$0.01-0.02/次优化（推荐）
+- OpenAI API: 约$0.15-0.30/次优化
+- 月使用100个视频: 约$1-2（DeepSeek）
+
 ### 自定义配置
 
 修改 `config.yaml` 文件来自定义各种参数：
@@ -187,6 +241,11 @@ transcriber:
   model_size: "large"        # 使用更大的模型提高准确度
   language: "zh"             # 强制使用中文
   task: "translate"          # 翻译为英文
+
+optimizer:
+  enable_ai_optimization: true    # 启用AI优化
+  optimization_style: "academic"  # 选择优化风格
+  max_tokens: 4000               # 控制成本
 ```
 
 ### 处理长视频
@@ -258,5 +317,6 @@ tail -f logs/app.log
 
 ## 更新日志
 
+- v1.2.0: 添加AI文档优化功能，支持DeepSeek和OpenAI API，提升文档质量
 - v1.1.0: 添加本地视频文件支持，支持混合批量处理
 - v1.0.0: 初始版本，支持基本的 YouTube 视频转文本功能

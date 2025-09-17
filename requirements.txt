@@ -21,3 +21,6 @@ loguru>=0.7.0
 
 # 文件操作
 pathlib2>=2.3.7
+
+# AI优化相关
+requests>=2.31.0
